@@ -259,7 +259,7 @@ class PgBouncerK8sCharm(CharmBase):
                 "override": "replace",
                 "after": [service["name"] for service in self._services],
             },
-            self._metrics_service: self._generate_monitoring_service(self.backend.postgres),
+            # self._metrics_service: self._generate_monitoring_service(self.backend.postgres),
         }
         for service in self._services:
             pebble_services[service["name"]] = {
@@ -359,15 +359,15 @@ class PgBouncerK8sCharm(CharmBase):
 
     def toggle_monitoring_layer(self, enabled: bool) -> None:
         """Starts or stops the monitoring service."""
-        pebble_layer = Layer(
-            {"services": {self._metrics_service: self._generate_monitoring_service(enabled)}}
-        )
-        pgb_container = self.unit.get_container(PGB)
-        pgb_container.add_layer(PGB, pebble_layer, combine=True)
-        if enabled:
-            pgb_container.replan()
-        else:
-            pgb_container.stop(self._metrics_service)
+        # pebble_layer = Layer(
+        #     {"services": {self._metrics_service: self._generate_monitoring_service(enabled)}}
+        # )
+        # pgb_container = self.unit.get_container(PGB)
+        # pgb_container.add_layer(PGB, pebble_layer, combine=True)
+        # if enabled:
+        #     pgb_container.replan()
+        # else:
+        #     pgb_container.stop(self._metrics_service)
         self.check_pgb_running()
 
     def check_pgb_running(self):
@@ -382,8 +382,8 @@ class PgBouncerK8sCharm(CharmBase):
         pebble_services = pgb_container.get_services()
 
         services = [service["name"] for service in self._services]
-        if self.backend.ready:
-            services.append(self._metrics_service)
+        # if self.backend.ready:
+        #     services.append(self._metrics_service)
 
         for service in services:
             if service not in pebble_services.keys():
